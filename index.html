@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="ORCA creates professional quotes for tradespeople." />
+  <meta name="description" content="ORCA creates professional quotes for any trade or service." />
   <title>ORCA — AI Quote Generator</title>
   <style>
     :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--blue:#1d4ed8;--blue2:#4f7af9;--green:#166534;--red:#b91c1c;--shadow:0 18px 42px #0f172a12}*{box-sizing:border-box}body{margin:0;background:linear-gradient(#eef4ff,#f8fafc 35%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}.container{max-width:1180px;margin:auto;padding:20px 16px 48px}.topbar{padding:4px 0 22px}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-weight:800;font-size:20px;box-shadow:0 12px 24px #1d4ed844}.brand strong{display:block;letter-spacing:.12em}.brand small{color:var(--muted)}.card{background:var(--card);border:1px solid #94a3b82b;border-radius:22px;box-shadow:var(--shadow);padding:22px}.hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(#fff,#eff6ff)}.eyebrow{width:max-content;padding:7px 10px;border-radius:99px;background:#1d4ed814;color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.hero h1{font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.08;margin:14px 0 18px}textarea,input,select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit}textarea{min-height:165px;resize:vertical}textarea:focus,input:focus,select:focus{outline:0;border-color:#1d4ed8aa;box-shadow:0 0 0 4px #1d4ed81a}button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 18px;cursor:pointer;transition:.15s}button:hover{transform:translateY(-1px)}.primary{margin-top:12px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 14px 26px #1d4ed840}.secondary{background:#eef2ff;color:var(--blue)}.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.danger{background:#fef2f2;color:var(--red);padding:8px 10px;font-size:12px}.hidden{display:none!important}.workspace{display:grid;gap:20px}.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.head h2{margin:0;font-size:1.15rem}.details{display:grid;grid-template-columns:1fr;gap:14px}.details label{display:grid;gap:6px}.details span{font-size:12px;color:var(--muted);font-weight:700}.field-wide{grid-column:1/-1}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;min-width:760px;border-collapse:collapse}th{text-align:left;padding:12px;color:var(--muted);background:#f8fafc;font-size:11px;text-transform:uppercase;letter-spacing:.07em}td{border-top:1px solid var(--line);padding:10px 12px}td input{padding:9px;font-size:14px}.totals{max-width:320px;margin:18px 0 0 auto;display:grid;gap:10px}.total{display:flex;justify-content:space-between;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#f8fafc}.grand{background:#f0fdf4;border-color:#bbf7d0;font-weight:800}.grand strong{color:var(--green)}.preview{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(#fff,#fafcff)}.preview-head,.client{display:flex;justify-content:space-between;gap:16px}.preview-head{padding-bottom:14px;border-bottom:1px solid var(--line)}.preview-head h3{margin:0 0 4px;font-size:1.45rem}.meta{text-align:right;display:grid;gap:4px;color:var(--muted);font-size:12px}.client{padding:16px 0;color:var(--muted);font-size:13px}.preview table{min-width:0}.preview th,.preview td{padding:9px 4px}.preview th:last-child,.preview td:last-child{text-align:right}.summary{max-width:260px;margin:18px 0 0 auto}.summary div{display:flex;justify-content:space-between;padding:7px;color:var(--muted)}.summary .final{border-top:1px solid var(--line);margin-top:6px;padding-top:12px;color:var(--ink);font-weight:800}@media(min-width:760px){.details{grid-template-columns:repeat(2,minmax(0,1fr))}.container{padding-left:24px;padding-right:24px}}@media print{body{background:#fff}.topbar,#start,.details-card,.items-card .head,#add,.head button{display:none!important}.container,.card,.preview{padding:0;border:0;box-shadow:none}}
@@ -14,10 +14,10 @@
     <header class="topbar"><div class="brand"><div class="mark">O</div><div><strong>ORCA</strong><small>Quote Generator</small></div></div></header>
     <main>
       <section id="start" class="card hero">
-        <div class="eyebrow">Fast quotes for trades</div>
+        <div class="eyebrow">Fast quotes for any trade or service</div>
         <h1>Describe the job</h1>
-        <label class="details"><span>Trade (optional)</span><select id="trade"><option value="general">General trade</option><option value="electrical">Electrical</option><option value="plumbing">Plumbing</option><option value="building">Building & construction</option><option value="painting">Painting & decorating</option><option value="carpentry">Carpentry & joinery</option><option value="landscaping">Landscaping & gardening</option><option value="cleaning">Cleaning</option><option value="hvac">Heating & air conditioning</option><option value="handyman">Handyman & maintenance</option></select></label>
-        <textarea id="job" placeholder="Example: Paint 3 rooms, fit 2 interior doors and repair the leaking kitchen tap."></textarea>
+        <label class="details"><span>Select your trade or service</span><select id="trade"><option value="general">General trade</option><optgroup label="Construction & Building"><option value="electrical">Electrical</option><option value="plumbing">Plumbing</option><option value="building">Building & construction</option><option value="roofing">Roofing</option><option value="masonry">Masonry & brickwork</option><option value="flooring">Flooring</option><option value="windows">Windows & doors</option></optgroup><optgroup label="Maintenance & Decorating"><option value="painting">Painting & decorating</option><option value="carpentry">Carpentry & joinery</option><option value="landscaping">Landscaping & gardening</option></optgroup><optgroup label="Specialized Services"><option value="hvac">Heating & air conditioning</option><option value="security">Security systems</option><option value="solar">Solar & renewables</option><option value="pool">Pool & hot tub services</option></optgroup><optgroup label="Other Services"><option value="cleaning">Cleaning</option><option value="handyman">Handyman & maintenance</option><option value="pest">Pest control</option><option value="removal">Moving & removal</option><option value="appliance">Appliance repair</option><option value="it">IT & smart home</option></optgroup></select></label>
+        <textarea id="job" placeholder="Example: Paint 3 rooms, install 2 new radiators and repair the roof gutter."></textarea>
         <button id="generate" class="primary" type="button">Generate Quote</button>
       </section>
 
@@ -25,7 +25,7 @@
         <div class="card details-card">
           <div class="head"><h2>Quote details</h2><button id="newQuote" class="ghost" type="button">New quote</button></div>
           <div class="details">
-            <label><span>Business name</span><input id="business" value="Hawthorne & Co. Trade Services"></label>
+            <label><span>Business name</span><input id="business" value="Your Business Name"></label>
             <label><span>Quote number</span><input id="number" value="Q-2026-001"></label>
             <label><span>Quote date</span><input id="date" type="date"></label>
             <label><span>Client name</span><input id="client" value="Your Client"></label>
@@ -49,15 +49,26 @@
     const $ = id => document.getElementById(id);
     const state = { items: [], id: 1 };
     const prices = {
-      electrical: { socket:['socket',65], switch:['switch',55], cable:['m',35], wire:['m',35], 'fuse box':['fuse box',250], panel:['panel',180], light:['light fitting',90], point:['point',80] },
-      plumbing: { tap:['tap',85], faucet:['tap',85], sink:['sink',180], toilet:['toilet',220], radiator:['radiator',120], pipe:['m',30], boiler:['boiler',900], drain:['job',180] },
-      building: { brick:['brick',2.5], wall:['m2',65], concrete:['m2',55], plaster:['m2',28], render:['m2',30], extension:['job',2500], demolition:['job',450] },
-      painting: { room:['room',220], wall:['m2',18], ceiling:['m2',20], door:['door',55], paint:['m2',18], wallpaper:['m2',25] },
+      electrical: { socket:['socket',65], switch:['switch',55], cable:['m',35], wire:['m',35], 'fuse box':['fuse box',250], panel:['panel',180], light:['light fitting',90], point:['point',80], outlet:['outlet',65], breaker:['breaker',45] },
+      plumbing: { tap:['tap',85], faucet:['tap',85], sink:['sink',180], toilet:['toilet',220], radiator:['radiator',120], pipe:['m',30], boiler:['boiler',900], drain:['job',180], bathtub:['bathtub',280], shower:['shower',320] },
+      building: { brick:['brick',2.5], wall:['m2',65], concrete:['m2',55], plaster:['m2',28], render:['m2',30], extension:['job',2500], demolition:['job',450], foundation:['m2',85] },
+      roofing: { roof:['m2',95], tile:['m2',75], repair:['job',250], gutter:['m',18], flashing:['m',22], inspection:['visit',120], leak:['job',200] },
+      masonry: { brick:['brick',2.5], block:['block',2], pointing:['m2',35], stone:['m2',85], wall:['m2',65], chimney:['chimney',450], retaining:['m2',120] },
+      flooring: { laminate:['m2',35], hardwood:['m2',85], vinyl:['m2',28], carpet:['m2',25], tile:['m2',55], preparation:['m2',15], underlayment:['m2',8] },
+      windows: { window:['window',250], door:['door',320], frame:['frame',180], glass:['m2',95], lock:['lock',45], installation:['unit',85], glazing:['m2',95] },
+      painting: { room:['room',220], wall:['m2',18], ceiling:['m2',20], door:['door',55], paint:['m2',18], wallpaper:['m2',25], prep:['m2',8] },
       carpentry: { door:['door',160], shelf:['unit',90], cabinet:['unit',350], wardrobe:['unit',650], skirting:['m',18], deck:['m2',75], fence:['m',45] },
-      landscaping: { lawn:['m2',12], grass:['m2',12], hedge:['m',18], tree:['tree',120], fence:['m',45], patio:['m2',85], planting:['m2',35] },
+      landscaping: { lawn:['m2',12], grass:['m2',12], hedge:['m',18], tree:['tree',120], fence:['m',45], patio:['m2',85], planting:['m2',35], gravel:['m2',8] },
+      hvac: { boiler:['boiler',900], radiator:['radiator',120], heating:['job',350], air:['unit',750], duct:['m',45], service:['visit',95], filter:['filter',28] },
+      security: { cctv:['camera',150], alarm:['system',450], sensor:['sensor',65], lock:['lock',120], installation:['visit',180], monitoring:['month',35] },
+      solar: { panel:['panel',450], installation:['kW',2500], inverter:['unit',1200], battery:['unit',5000], inspection:['visit',180] },
+      pool: { cleaning:['visit',120], maintenance:['month',85], repair:['job',250], filter:['filter',350], pump:['pump',600], opening:['job',280] },
       cleaning: { house:['job',160], deep:['job',240], office:['hour',28], carpet:['m2',8], window:['window',12], oven:['unit',55] },
-      hvac: { boiler:['boiler',900], radiator:['radiator',120], heating:['job',350], air:['unit',750], duct:['m',45], service:['visit',95] },
       handyman: { repair:['job',120], assembly:['unit',75], furniture:['unit',75], shelf:['unit',60], fitting:['unit',70], maintenance:['hour',45] },
+      pest: { inspection:['visit',95], treatment:['visit',180], spray:['job',140], rodent:['visit',150], termite:['job',350], monthly:['month',65] },
+      removal: { 'house move':['job',1200], 'apartment move':['job',650], storage:['month',120], packing:['hour',35], delivery:['job',280] },
+      appliance: { repair:['visit',95], parts:['unit',50], fridge:['repair',180], washer:['repair',160], dishwasher:['repair',140], installation:['unit',85] },
+      it: { installation:['visit',120], setup:['visit',150], smart:['device',180], network:['visit',200], support:['hour',65], consultation:['hour',85] },
       general: {}
     };
 
@@ -71,6 +82,7 @@
       if(/hour|hourly/.test(lower)) return {unit:'hour',price:45};
       if(/m2|sqm|square metre|square meter/.test(lower)) return {unit:'m2',price:35};
       if(/\b(m|metre|meter|metres|meters)\b/.test(lower)) return {unit:'m',price:35};
+      if(/visit|callout|appointment/.test(lower)) return {unit:'visit',price:95};
       return {unit:'job',price:150};
     }
     function parse(text){
@@ -78,8 +90,8 @@
       return chunks.map(chunk=>{
         const match=chunk.match(/(\d+(?:\.\d+)?)\s*(?:of\s+)?(.+)/i);
         let quantity=match?Number(match[1]):1;
-        let description=(match?match[2]:chunk).replace(/^(install|replace|run|fit|repair|service|supply|remove|paint|clean|build)\s+/i,'').replace(/\b(?:m|metre|meter|metres|meters)\b/gi,'').replace(/\s+/g,' ').trim();
-        if(!description) description='General trade work';
+        let description=(match?match[2]:chunk).replace(/^(install|replace|run|fit|repair|service|supply|remove|paint|clean|build|install|fix|add|replace)\s+/i,'').replace(/\b(?:m|metre|meter|metres|meters)\b/gi,'').replace(/\s+/g,' ').trim();
+        if(!description) description='Service work';
         const item=info(description);
         return {id:state.id++,description,quantity,unit:item.unit,unitPrice:item.price};
       });
@@ -98,7 +110,7 @@
     function update(){ $('subtotal').textContent=money(total()); $('grand').textContent=money(total()); }
     function preview(){
       const rows=state.items.length?state.items.map(item=>`<tr><td>${esc(item.description)}</td><td>${item.quantity}</td><td>${esc(item.unit)}</td><td>${money(item.unitPrice)}</td><td>${money(item.quantity*item.unitPrice)}</td></tr>`).join(''):'<tr><td colspan="5">No items yet.</td></tr>';
-      $('preview').innerHTML=`<div class="preview-head"><div><h3>${esc($('business').value||'Business name')}</h3><span>Professional trade services</span></div><div class="meta"><span><b>Quote #</b> ${esc($('number').value||'N/A')}</span><span><b>Date</b> ${esc($('date').value)}</span><span><b>Currency</b> ${esc($('currency').value)}</span></div></div><div class="client"><div><b>Client</b><br>${esc($('client').value||'Client')}</div><div><b>Trade</b><br>${esc($('trade').options[$('trade').selectedIndex].text)}</div></div><table><thead><tr><th>Description</th><th>Qty</th><th>Unit</th><th>Unit price</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table><div class="summary"><div>Subtotal <span>${money(total())}</span></div><div class="final">Grand total <span>${money(total())}</span></div></div>`;
+      $('preview').innerHTML=`<div class="preview-head"><div><h3>${esc($('business').value||'Business name')}</h3><span>Professional quote</span></div><div class="meta"><span><b>Quote #</b> ${esc($('number').value||'N/A')}</span><span><b>Date</b> ${esc($('date').value)}</span><span><b>Currency</b> ${esc($('currency').value)}</span></div></div><div class="client"><div><b>Client</b><br>${esc($('client').value||'Client')}</div><div><b>Service</b><br>${esc($('trade').options[$('trade').selectedIndex].text)}</div></div><table><thead><tr><th>Description</th><th>Qty</th><th>Unit</th><th>Unit price</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table><div class="summary"><div>Subtotal <span>${money(total())}</span></div><div class="final">Grand total <span>${money(total())}</span></div></div>`;
     }
     function generate(){
       const text=$('job').value.trim();
