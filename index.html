@@ -1,40 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ORCA helps tradespeople create professional quotes quickly.">
-  <title>ORCA — Quote Generator</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="topbar"><div class="brand"><span class="mark">O</span><span><b>ORCA</b><small>Quote Generator</small></span></div></header>
-  <main class="container">
-    <section id="start" class="card hero">
-      <span class="eyebrow">Fast quotes for trades</span>
-      <h1>Describe the job</h1>
-      <textarea id="job" rows="6" placeholder="Example: Install 8 electrical sockets, replace the fuse box and run 30m of cable."></textarea>
-      <button id="generate" class="primary">Generate Quote</button>
-    </section>
-    <section id="workspace" class="hidden">
-      <div class="card">
-        <div class="heading"><h2>Quote details</h2><button id="newQuote" class="outline">New quote</button></div>
-        <div class="details">
-          <label>Business name<input id="business" value="Hawthorne & Co. Building Services"></label>
-          <label>Quote number<input id="number" value="Q-2026-001"></label>
-          <label>Quote date<input id="date" type="date"></label>
-          <label>Client name<input id="client" value="Your Client"></label>
-          <label>Currency<select id="currency"><option value="GBP">GBP (£)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option></select></label>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="ORCA helps tradespeople create quick, professional quotes from a simple job description."
+    />
+    <title>ORCA — AI Quote Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">O</div>
+          <div>
+            <div class="brand-name">ORCA</div>
+            <div class="brand-tag">Quote Generator</div>
+          </div>
         </div>
-      </div>
-      <div class="card">
-        <div class="heading"><h2>Quote items</h2><button id="add" class="secondary">Add item</button></div>
-        <div class="table-scroll"><table><thead><tr><th>Description</th><th>Qty</th><th>Unit</th><th>Unit price</th><th>Total</th><th></th></tr></thead><tbody id="items"></tbody></table></div>
-        <div class="totals"><div>Subtotal <strong id="subtotal"></strong></div><div class="grand">Grand total <strong id="grandTotal"></strong></div></div>
-      </div>
-      <div class="card preview-card"><div class="heading"><h2>Professional preview</h2><button id="print" class="primary">Print / Save as PDF</button></div><div id="preview" class="preview"></div></div>
-    </section>
-  </main>
-  <script src="script.js"></script>
-</body>
+      </header>
+
+      <main class="container">
+        <section id="start" class="card hero-card">
+          <div class="eyebrow">Fast quotes for trades</div>
+          <h1>Describe the job</h1>
+          <textarea
+            id="job"
+            rows="6"
+            placeholder="Example: Install 8 electrical sockets, replace the fuse box and run 30m of cable."
+            aria-label="Describe the job"
+          ></textarea>
+          <button id="generate" class="primary-btn" type="button">Generate Quote</button>
+        </section>
+
+        <section id="workspace" class="hidden">
+          <div class="card details-card">
+            <div class="section-head">
+              <h2>Quote details</h2>
+              <button id="newQuote" class="ghost-btn" type="button">New quote</button>
+            </div>
+
+            <div class="details-grid">
+              <label>
+                <span>Business name</span>
+                <input id="business" type="text" value="Hawthorne & Co. Building Services" />
+              </label>
+              <label>
+                <span>Quote number</span>
+                <input id="number" type="text" value="Q-2026-001" />
+              </label>
+              <label>
+                <span>Quote date</span>
+                <input id="date" type="date" />
+              </label>
+              <label>
+                <span>Client name</span>
+                <input id="client" type="text" value="Mr. and Mrs. Mason" />
+              </label>
+              <label class="currency-box">
+                <span>Currency</span>
+                <select id="currency">
+                  <option value="GBP">GBP (£)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="card table-card">
+            <div class="section-head">
+              <h2>Quote items</h2>
+              <button id="add" class="secondary-btn" type="button">Add item</button>
+            </div>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Unit price</th>
+                    <th>Total</th>
+                    <th class="tiny-col"></th>
+                  </tr>
+                </thead>
+                <tbody id="items"></tbody>
+              </table>
+            </div>
+
+            <div class="totals-box">
+              <div class="total-row">
+                <span>Subtotal</span>
+                <strong id="subtotal">£0.00</strong>
+              </div>
+              <div class="total-row grand-row">
+                <span>Grand total</span>
+                <strong id="grandTotal">£0.00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card preview-card">
+            <div class="section-head">
+              <h2>Professional preview</h2>
+              <button id="print" class="primary-btn" type="button">Print / Save as PDF</button>
+            </div>
+            <div id="preview" class="preview"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
 </html>
