@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="ORCA helps tradespeople create quick, professional quotes from a simple job description."
+      content="ORCA helps tradespeople create quick, professional quotes from simple job descriptions."
     />
     <title>ORCA — AI Quote Generator</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="page-shell">
+    <div class="app-shell">
       <header class="topbar">
-        <div class="brand-block">
+        <div class="brand-wrap">
           <div class="brand-mark">O</div>
           <div>
             <div class="brand-name">ORCA</div>
-            <div class="brand-tag">Quote Generator</div>
+            <div class="brand-subtitle">Quote Generator</div>
           </div>
         </div>
       </header>
 
-      <main class="container">
+      <main class="page">
         <section id="start" class="card hero-card">
           <div class="eyebrow">Fast quotes for trades</div>
           <h1>Describe the job</h1>
@@ -47,18 +47,22 @@
                 <span>Business name</span>
                 <input id="business" type="text" value="Hawthorne & Co. Building Services" />
               </label>
+
               <label>
                 <span>Quote number</span>
                 <input id="number" type="text" value="Q-2026-001" />
               </label>
+
               <label>
                 <span>Quote date</span>
                 <input id="date" type="date" />
               </label>
+
               <label>
                 <span>Client name</span>
                 <input id="client" type="text" value="Mr. and Mrs. Mason" />
               </label>
+
               <label class="currency-box">
                 <span>Currency</span>
                 <select id="currency">
@@ -85,7 +89,7 @@
                     <th>Unit</th>
                     <th>Unit price</th>
                     <th>Total</th>
-                    <th class="tiny-col"></th>
+                    <th class="action-col"></th>
                   </tr>
                 </thead>
                 <tbody id="items"></tbody>
@@ -109,7 +113,8 @@
               <h2>Professional preview</h2>
               <button id="print" class="primary-btn" type="button">Print / Save as PDF</button>
             </div>
-            <div id="preview" class="preview"></div>
+
+            <div id="preview" class="preview" aria-live="polite"></div>
           </div>
         </section>
       </main>
