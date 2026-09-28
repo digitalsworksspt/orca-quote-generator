@@ -1,125 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="ORCA helps tradespeople create quick, professional quotes from simple job descriptions."
-    />
-    <title>ORCA — AI Quote Generator</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div class="brand-wrap">
-          <div class="brand-mark">O</div>
-          <div>
-            <div class="brand-name">ORCA</div>
-            <div class="brand-subtitle">Quote Generator</div>
-          </div>
-        </div>
-      </header>
-
-      <main class="page">
-        <section id="start" class="card hero-card">
-          <div class="eyebrow">Fast quotes for trades</div>
-          <h1>Describe the job</h1>
-          <textarea
-            id="job"
-            rows="6"
-            placeholder="Example: Install 8 electrical sockets, replace the fuse box and run 30m of cable."
-            aria-label="Describe the job"
-          ></textarea>
-          <button id="generate" class="primary-btn" type="button">Generate Quote</button>
-        </section>
-
-        <section id="workspace" class="hidden">
-          <div class="card details-card">
-            <div class="section-head">
-              <h2>Quote details</h2>
-              <button id="newQuote" class="ghost-btn" type="button">New quote</button>
-            </div>
-
-            <div class="details-grid">
-              <label>
-                <span>Business name</span>
-                <input id="business" type="text" value="Hawthorne & Co. Building Services" />
-              </label>
-
-              <label>
-                <span>Quote number</span>
-                <input id="number" type="text" value="Q-2026-001" />
-              </label>
-
-              <label>
-                <span>Quote date</span>
-                <input id="date" type="date" />
-              </label>
-
-              <label>
-                <span>Client name</span>
-                <input id="client" type="text" value="Mr. and Mrs. Mason" />
-              </label>
-
-              <label class="currency-box">
-                <span>Currency</span>
-                <select id="currency">
-                  <option value="GBP">GBP (£)</option>
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                </select>
-              </label>
-            </div>
-          </div>
-
-          <div class="card table-card">
-            <div class="section-head">
-              <h2>Quote items</h2>
-              <button id="add" class="secondary-btn" type="button">Add item</button>
-            </div>
-
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Qty</th>
-                    <th>Unit</th>
-                    <th>Unit price</th>
-                    <th>Total</th>
-                    <th class="action-col"></th>
-                  </tr>
-                </thead>
-                <tbody id="items"></tbody>
-              </table>
-            </div>
-
-            <div class="totals-box">
-              <div class="total-row">
-                <span>Subtotal</span>
-                <strong id="subtotal">£0.00</strong>
-              </div>
-              <div class="total-row grand-row">
-                <span>Grand total</span>
-                <strong id="grandTotal">£0.00</strong>
-              </div>
-            </div>
-          </div>
-
-          <div class="card preview-card">
-            <div class="section-head">
-              <h2>Professional preview</h2>
-              <button id="print" class="primary-btn" type="button">Print / Save as PDF</button>
-            </div>
-
-            <div id="preview" class="preview" aria-live="polite"></div>
-          </div>
-        </section>
-      </main>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORCA - Quote Generator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 800px;
+      width: 100%;
+      padding: 40px;
+    }
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo h1 { margin: 0; color: #667eea; font-size: 32px; }
+    .logo p { margin: 5px 0 0 0; color: #888; font-size: 14px; }
+    h2 { color: #333; margin-top: 0; margin-bottom: 20px; font-size: 20px; }
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 120px;
+      margin-bottom: 20px;
+    }
+    textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3); }
+    button.secondary {
+      background: #f0f0f0;
+      color: #667eea;
+      margin-bottom: 20px;
+    }
+    button.delete { background: #ff4757; width: auto; padding: 6px 12px; font-size: 12px; }
+    .quote-section { display: none; margin-top: 30px; }
+    .quote-section.active { display: block; }
+    .details { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+    label { display: flex; flex-direction: column; }
+    label span { font-size: 12px; color: #888; margin-bottom: 5px; font-weight: 600; }
+    input, select {
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    input:focus, select:focus { outline: none; border-color: #667eea; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #f9f9f9; font-weight: 600; color: #667eea; font-size: 12px; }
+    td input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+    .totals { display: flex; justify-content: flex-end; gap: 20px; margin: 20px 0; }
+    .total-row { display: flex; justify-content: space-between; min-width: 200px; }
+    .total-row strong { color: #667eea; font-size: 16px; }
+    .preview { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 20px; }
+    .preview-title { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 10px; }
+    @media (max-width: 600px) {
+      .details { grid-template-columns: 1fr; }
+      .container { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <h1>⚓ ORCA</h1>
+      <p>Professional Quote Generator</p>
     </div>
 
-    <script src="script.js"></script>
-  </body>
+    <div id="startScreen">
+      <h2>Describe the Job</h2>
+      <textarea id="jobInput" placeholder="Example: Install 8 electrical sockets, replace the fuse box and run 30m of cable."></textarea>
+      <button onclick="generateQuote()">Generate Quote</button>
+    </div>
+
+    <div id="quoteScreen" class="quote-section">
+      <button class="secondary" onclick="resetApp()">← New Quote</button>
+      
+      <h2>Quote Details</h2>
+      <div class="details">
+        <label>
+          <span>Business Name</span>
+          <input type="text" id="businessName" value="Your Business Name" onchange="updatePreview()">
+        </label>
+        <label>
+          <span>Quote Number</span>
+          <input type="text" id="quoteNumber" value="Q-001" onchange="updatePreview()">
+        </label>
+        <label>
+          <span>Quote Date</span>
+          <input type="date" id="quoteDate" onchange="updatePreview()">
+        </label>
+        <label>
+          <span>Client Name</span>
+          <input type="text" id="clientName" value="Client" onchange="updatePreview()">
+        </label>
+        <label>
+          <span>Currency</span>
+          <select id="currency" onchange="updatePreview()">
+            <option value="£">GBP (£)</option>
+            <option value="$">USD ($)</option>
+            <option value="€">EUR (€)</option>
+          </select>
+        </label>
+      </div>
+
+      <h2>Quote Items</h2>
+      <button class="secondary" onclick="addItem()">+ Add Item</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="itemsTable"></tbody>
+      </table>
+
+      <div class="totals">
+        <div>
+          <div>Subtotal: <strong id="subtotal">£0.00</strong></div>
+          <div>Grand Total: <strong id="grandTotal">£0.00</strong></div>
+        </div>
+      </div>
+
+      <h2>Preview</h2>
+      <div class="preview" id="preview"></div>
+
+      <button onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <script>
+    let items = [];
+    let itemId = 0;
+
+    function setTodayDate() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('quoteDate').value = today;
+    }
+
+    function generateQuote() {
+      const job = document.getElementById('jobInput').value.trim();
+      if (!job) {
+        alert('Please describe the job');
+        return;
+      }
+
+      items = parseJob(job);
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('quoteScreen').classList.add('active');
+      setTodayDate();
+      renderItems();
+      updatePreview();
+    }
+
+    function parseJob(text) {
+      const result = [];
+      const parts = text.split(/[,;]/);
+
+      parts.forEach(part => {
+        part = part.trim();
+        if (!part) return;
+
+        const match = part.match(/(\d+(?:\.\d+)?)\s+([a-zA-Z\s]+?)(?:\s+of\s+)?(\w+)?$/i);
+        if (match) {
+          const qty = parseFloat(match[1]);
+          let desc = match[2].trim();
+          let unit = match[3]?.trim() || 'unit';
+          let price = 100;
+
+          if (/socket/i.test(desc)) { unit = 'socket'; price = 65; }
+          else if (/fuse/i.test(desc)) { unit = 'fuse box'; price = 250; }
+          else if (/cable|wire/i.test(desc)) { unit = 'm'; price = 35; }
+          else if (/switch/i.test(desc)) { unit = 'switch'; price = 55; }
+
+          result.push({ id: itemId++, desc, qty, unit, price });
+        }
+      });
+
+      if (result.length === 0) {
+        result.push({ id: itemId++, desc: text, qty: 1, unit: 'job', price: 150 });
+      }
+
+      return result;
+    }
+
+    function renderItems() {
+      const tbody = document.getElementById('itemsTable');
+      tbody.innerHTML = '';
+
+      items.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="text" value="${item.desc}" onchange="updateItem(${item.id}, 'desc', this.value)"></td>
+          <td><input type="number" value="${item.qty}" step="0.01" onchange="updateItem(${item.id}, 'qty', this.value)"></td>
+          <td><input type="text" value="${item.unit}" onchange="updateItem(${item.id}, 'unit', this.value)"></td>
+          <td><input type="number" value="${item.price}" step="0.01" onchange="updateItem(${item.id}, 'price', this.value)"></td>
+          <td>${formatCurrency(item.qty * item.price)}</td>
+          <td><button class="delete" onclick="deleteItem(${item.id})">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function updateItem(id, field, value) {
+      const item = items.find(i => i.id === id);
+      if (item) {
+        item[field] = field === 'desc' || field === 'unit' ? value : parseFloat(value);
+        renderItems();
+        updatePreview();
+      }
+    }
+
+    function deleteItem(id) {
+      items = items.filter(i => i.id !== id);
+      renderItems();
+      updatePreview();
+    }
+
+    function addItem() {
+      items.push({ id: itemId++, desc: 'New item', qty: 1, unit: 'unit', price: 0 });
+      renderItems();
+      updatePreview();
+    }
+
+    function formatCurrency(amount) {
+      const curr = document.getElementById('currency').value;
+      return `${curr}${(parseFloat(amount) || 0).toFixed(2)}`;
+    }
+
+    function updateTotals() {
+      const subtotal = items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+      document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+      document.getElementById('grandTotal').textContent = formatCurrency(subtotal);
+      return subtotal;
+    }
+
+    function updatePreview() {
+      updateTotals();
+      const subtotal = items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+      const date = document.getElementById('quoteDate').value;
+      const business = document.getElementById('businessName').value;
+      const client = document.getElementById('clientName').value;
+      const quoteNum = document.getElementById('quoteNumber').value;
+
+      let html = `
+        <div class="preview-title">${business}</div>
+        <p><strong>Quote #</strong> ${quoteNum} | <strong>Date:</strong> ${date}</p>
+        <p><strong>Client:</strong> ${client}</p>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="border-bottom: 1px solid #ddd;">
+            <td style="padding: 8px;"><strong>Description</strong></td>
+            <td style="padding: 8px; text-align: right;"><strong>Qty</strong></td>
+            <td style="padding: 8px; text-align: right;"><strong>Unit</strong></td>
+            <td style="padding: 8px; text-align: right;"><strong>Price</strong></td>
+            <td style="padding: 8px; text-align: right;"><strong>Total</strong></td>
+          </tr>
+      `;
+
+      items.forEach(item => {
+        html += `
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 8px;">${item.desc}</td>
+            <td style="padding: 8px; text-align: right;">${item.qty}</td>
+            <td style="padding: 8px; text-align: right;">${item.unit}</td>
+            <td style="padding: 8px; text-align: right;">${formatCurrency(item.price)}</td>
+            <td style="padding: 8px; text-align: right;">${formatCurrency(item.qty * item.price)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+        </table>
+        <p style="text-align: right; margin-top: 20px;">
+          <strong>Grand Total: ${formatCurrency(subtotal)}</strong>
+        </p>
+      `;
+
+      document.getElementById('preview').innerHTML = html;
+    }
+
+    function resetApp() {
+      document.getElementById('startScreen').style.display = 'block';
+      document.getElementById('quoteScreen').classList.remove('active');
+      document.getElementById('jobInput').value = '';
+      items = [];
+    }
+
+    setTodayDate();
+  </script>
+</body>
 </html>
