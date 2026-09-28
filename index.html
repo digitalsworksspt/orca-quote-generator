@@ -6,16 +6,18 @@
     <title>ORCA — AI Quote Generator</title>
     <style>
       :root {
-        --bg: #f3f6fc;
-        --panel: #ffffff;
+        --bg: #f3f6fb;
+        --panel: rgba(255,255,255,0.98);
         --panel-alt: #f8fafc;
         --primary: #1d4ed8;
-        --primary-2: #2563eb;
+        --primary-strong: #1e3a8a;
+        --primary-soft: rgba(29, 78, 216, 0.08);
         --text: #0f172a;
         --muted: #475569;
         --line: #e2e8f0;
         --success: #166534;
-        --shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
+        --danger: #dc2626;
+        --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
       }
 
       * { box-sizing: border-box; }
@@ -24,9 +26,9 @@
 
       body {
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        background: linear-gradient(180deg, #eef4ff, var(--bg) 35%, #f8fafc 100%);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         color: var(--text);
+        background: linear-gradient(180deg, #eef4ff 0%, #f3f6fb 24%, #f8fafc 100%);
       }
 
       button, input, select, textarea {
@@ -40,11 +42,11 @@
       .container {
         max-width: 1180px;
         margin: 0 auto;
-        padding: 18px 16px 40px;
+        padding: 18px 16px 42px;
       }
 
       .topbar {
-        padding: 6px 0 22px;
+        padding: 6px 0 20px;
       }
 
       .brand {
@@ -56,34 +58,35 @@
       .brand-mark {
         width: 42px;
         height: 42px;
-        border-radius: 14px;
         display: grid;
         place-items: center;
-        background: linear-gradient(135deg, var(--primary), var(--primary-2));
-        color: white;
+        border-radius: 14px;
         font-weight: 800;
-        font-size: 20px;
-        box-shadow: 0 14px 28px rgba(29, 78, 216, 0.28);
+        font-size: 1.1rem;
+        color: white;
+        background: linear-gradient(135deg, var(--primary), #5b8cff);
+        box-shadow: 0 14px 28px rgba(29, 78, 216, 0.22);
       }
 
       .brand-text {
         line-height: 1.05;
       }
 
-      .brand-text strong {
+      .brand-name {
         display: block;
         letter-spacing: 0.12em;
+        font-weight: 800;
         font-size: 1.05rem;
       }
 
-      .brand-text small {
+      .brand-subtitle {
         display: block;
         color: var(--muted);
         font-size: 0.72rem;
       }
 
       .card {
-        background: rgba(255,255,255,0.96);
+        background: var(--panel);
         border: 1px solid rgba(148, 163, 184, 0.18);
         border-radius: 22px;
         box-shadow: var(--shadow);
@@ -91,66 +94,69 @@
       }
 
       .hero-card {
+        min-height: 72vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        min-height: 72vh;
-        background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(239,246,255,0.86));
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,246,255,0.9));
       }
 
       .eyebrow {
         width: fit-content;
-        padding: 7px 10px;
-        border-radius: 999px;
-        background: rgba(29, 78, 216, 0.08);
+        background: var(--primary-soft);
         color: var(--primary);
-        font-size: 0.72rem;
-        font-weight: 700;
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 0.7rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
+        font-weight: 700;
       }
 
       h1 {
-        margin: 14px 0 18px;
-        font-size: clamp(2.2rem, 5vw, 3.4rem);
+        margin: 14px 0 16px;
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
         line-height: 1.08;
       }
 
       textarea, input, select {
         width: 100%;
+        background: white;
         border: 1px solid var(--line);
         border-radius: 12px;
-        background: white;
-        padding: 13px 14px;
+        padding: 12px 14px;
         color: var(--text);
         font-size: 0.97rem;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
 
       textarea {
-        min-height: 170px;
         resize: vertical;
+        min-height: 170px;
       }
 
       textarea:focus, input:focus, select:focus {
         outline: none;
-        border-color: rgba(29, 78, 216, 0.75);
-        box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.12);
+        border-color: rgba(29, 78, 216, 0.7);
+        box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.1);
       }
 
-      .primary-btn, .secondary-btn, .ghost-btn, .delete-btn {
+      .primary-btn,
+      .secondary-btn,
+      .ghost-btn,
+      .delete-btn {
         border: none;
         border-radius: 12px;
         padding: 12px 18px;
         font-weight: 700;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
       }
 
       .primary-btn {
-        margin-top: 10px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        margin-top: 12px;
+        background: linear-gradient(135deg, var(--primary), #4f7af9);
         color: white;
-        box-shadow: 0 16px 32px rgba(29, 78, 216, 0.26);
+        box-shadow: 0 16px 28px rgba(29, 78, 216, 0.25);
       }
 
       .secondary-btn {
@@ -164,7 +170,10 @@
         color: var(--text);
       }
 
-      .primary-btn:hover, .secondary-btn:hover, .ghost-btn:hover {
+      .primary-btn:hover,
+      .secondary-btn:hover,
+      .ghost-btn:hover,
+      .delete-btn:hover {
         transform: translateY(-1px);
       }
 
@@ -187,7 +196,7 @@
 
       .section-head h2 {
         margin: 0;
-        font-size: 1.18rem;
+        font-size: 1.12rem;
       }
 
       .details-grid {
@@ -203,7 +212,7 @@
 
       .details-grid span {
         color: var(--muted);
-        font-size: 0.76rem;
+        font-size: 0.75rem;
         font-weight: 600;
       }
 
@@ -226,9 +235,9 @@
       th {
         text-align: left;
         padding: 12px 14px;
-        color: var(--muted);
         background: #f8fafc;
-        font-size: 0.7rem;
+        color: var(--muted);
+        font-size: 0.68rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
       }
@@ -239,41 +248,34 @@
         vertical-align: middle;
       }
 
-      td input {
-        min-width: 0;
-      }
-
       .delete-btn {
-        background: rgba(239, 68, 68, 0.08);
-        color: #b91c1c;
-        border: 1px solid rgba(239, 68, 68, 0.12);
+        background: rgba(220, 38, 38, 0.08);
+        color: var(--danger);
+        border: 1px solid rgba(220, 38, 38, 0.12);
       }
 
       .totals-box {
-        max-width: 320px;
-        margin-left: auto;
         display: grid;
         gap: 10px;
+        max-width: 320px;
+        margin-left: auto;
         margin-top: 18px;
       }
 
       .total-row {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         gap: 12px;
         padding: 12px 14px;
         border-radius: 12px;
-        border: 1px solid var(--line);
         background: #f8fafc;
-      }
-
-      .total-row strong {
-        font-size: 1.04rem;
+        border: 1px solid var(--line);
       }
 
       .grand-row {
-        background: rgba(34, 197, 94, 0.07);
-        border-color: rgba(34, 197, 94, 0.2);
+        background: rgba(22, 101, 52, 0.06);
+        border-color: rgba(22, 101, 52, 0.18);
       }
 
       .grand-row strong {
@@ -284,28 +286,28 @@
         border: 1px solid var(--line);
         border-radius: 16px;
         background: linear-gradient(180deg, #fff, #fafcff);
-        padding: 16px;
+        padding: 18px;
       }
 
       .preview-head {
         display: flex;
         justify-content: space-between;
-        gap: 16px;
+        gap: 12px;
         padding-bottom: 12px;
         border-bottom: 1px solid var(--line);
       }
 
       .preview-head h3 {
         margin: 0 0 4px;
-        font-size: 1.5rem;
+        font-size: 1.4rem;
       }
 
       .preview-meta {
-        display: grid;
-        gap: 4px;
         text-align: right;
         color: var(--muted);
-        font-size: 0.82rem;
+        font-size: 0.8rem;
+        display: grid;
+        gap: 4px;
       }
 
       .preview-client {
@@ -317,24 +319,24 @@
         font-size: 0.9rem;
       }
 
-      .preview table {
+      .preview-table {
         width: 100%;
-        min-width: 0;
       }
 
-      .preview th, .preview td {
+      .preview-table th,
+      .preview-table td {
+        border-bottom: 1px solid var(--line);
         padding: 9px 4px;
         text-align: left;
-        border-bottom: 1px solid var(--line);
       }
 
-      .preview td:last-child,
-      .preview th:last-child {
+      .preview-table th:last-child,
+      .preview-table td:last-child {
         text-align: right;
       }
 
       .preview-summary {
-        margin-top: 18px;
+        margin-top: 16px;
         display: flex;
         justify-content: flex-end;
       }
@@ -352,29 +354,59 @@
         display: flex;
         justify-content: space-between;
         gap: 12px;
-        padding: 7px 0;
+        padding: 6px 0;
         color: var(--muted);
       }
 
       .summary-row.total {
         border-top: 1px solid var(--line);
-        margin-top: 6px;
+        margin-top: 8px;
         padding-top: 12px;
         color: var(--text);
         font-weight: 800;
       }
 
       @media (min-width: 768px) {
-        .container { padding: 20px 24px 48px; }
-        .details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .container {
+          padding: 20px 24px 48px;
+        }
+
+        .details-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
       }
 
       @media print {
-        body { background: white; }
-        .topbar, #start, .card:not(.preview-card), .section-head button, .primary-btn, .secondary-btn, .ghost-btn, .delete-btn { display: none !important; }
-        .container { max-width: none; padding: 0; }
-        .card { box-shadow: none; border: none; }
-        .preview { border: none; }
+        body {
+          background: white;
+        }
+
+        .topbar,
+        #start,
+        #newQuoteBtn,
+        #addItemBtn,
+        #printBtn,
+        .delete-btn,
+        .ghost-btn,
+        .secondary-btn {
+          display: none !important;
+        }
+
+        .container {
+          max-width: none;
+          padding: 0;
+        }
+
+        .card {
+          box-shadow: none;
+          border: none;
+          padding: 0;
+        }
+
+        .preview {
+          border: none;
+          padding: 0;
+        }
       }
     </style>
   </head>
@@ -384,8 +416,8 @@
         <div class="brand">
           <div class="brand-mark">O</div>
           <div class="brand-text">
-            <strong>ORCA</strong>
-            <small>Quote Generator</small>
+            <span class="brand-name">ORCA</span>
+            <small class="brand-subtitle">Quote Generator</small>
           </div>
         </div>
       </header>
@@ -467,7 +499,7 @@
             </div>
           </div>
 
-          <div class="card preview-card">
+          <div class="card">
             <div class="section-head">
               <h2>Professional preview</h2>
               <button id="printBtn" class="primary-btn" type="button">Print / Save as PDF</button>
@@ -507,6 +539,15 @@
         return `${symbol}${(Number(value) || 0).toFixed(2)}`;
       }
 
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
       function detectUnit(text) {
         const lower = text.toLowerCase();
         if (/fuse box/.test(lower)) return { unit: 'fuse box', price: 250 };
@@ -537,6 +578,7 @@
 
         chunks.forEach(chunk => {
           const match = chunk.match(/(\d+(?:\.\d+)?)\s*(?:of\s+)?(.+)/i);
+
           if (!match) {
             const fallback = chunk.replace(/^(install|replace|run|fit|repair|service|supply|remove)\s+/i, '').trim();
             if (!fallback) return;
@@ -598,8 +640,7 @@
             <td><button class="delete-btn" type="button">Delete</button></td>
           `;
 
-          const inputs = row.querySelectorAll('input');
-          inputs.forEach(input => {
+          row.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', () => {
               const field = input.dataset.field;
               const value = field === 'description' || field === 'unit' ? input.value : Number(input.value) || 0;
@@ -621,15 +662,6 @@
         });
       }
 
-      function escapeHtml(value) {
-        return String(value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
-      }
-
       function updateTotals() {
         const subtotal = state.items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.unitPrice)), 0);
         els.subtotalValue.textContent = formatCurrency(subtotal, els.currency.value);
@@ -644,17 +676,15 @@
         const symbol = els.currency.value;
         const subtotal = state.items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.unitPrice)), 0);
 
-        const rowsHtml = state.items.length
-          ? state.items.map(item => `
-              <tr>
-                <td>${escapeHtml(item.description)}</td>
-                <td>${Number(item.quantity)}</td>
-                <td>${escapeHtml(item.unit)}</td>
-                <td>${formatCurrency(item.unitPrice, symbol)}</td>
-                <td>${formatCurrency(item.quantity * item.unitPrice, symbol)}</td>
-              </tr>
-            `).join('')
-          : '<tr><td colspan="5">No items yet.</td></tr>';
+        const rowsHtml = state.items.length ? state.items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.description)}</td>
+            <td>${Number(item.quantity)}</td>
+            <td>${escapeHtml(item.unit)}</td>
+            <td>${formatCurrency(item.unitPrice, symbol)}</td>
+            <td>${formatCurrency(item.quantity * item.unitPrice, symbol)}</td>
+          </tr>
+        `).join('') : '<tr><td colspan="5">No items yet.</td></tr>';
 
         els.preview.innerHTML = `
           <div class="preview-head">
@@ -674,7 +704,7 @@
             <div><strong>Prepared by</strong><br>${escapeHtml(businessName)}</div>
           </div>
 
-          <table>
+          <table class="preview-table">
             <thead>
               <tr>
                 <th>Description</th>
@@ -718,9 +748,9 @@
         state.items = parseJobDescription(text);
         els.start.classList.add('hidden');
         els.workspace.classList.remove('hidden');
+
         if (!els.quoteDate.value) {
-          const today = new Date().toISOString().slice(0, 10);
-          els.quoteDate.value = today;
+          els.quoteDate.value = new Date().toISOString().slice(0, 10);
         }
 
         renderTable();
@@ -729,7 +759,13 @@
       }
 
       function addEmptyItem() {
-        state.items.push({ id: `item-${state.counter++}`, description: 'New item', quantity: 1, unit: 'unit', unitPrice: 0 });
+        state.items.push({
+          id: `item-${state.counter++}`,
+          description: 'New item',
+          quantity: 1,
+          unit: 'unit',
+          unitPrice: 0
+        });
         renderTable();
         updateTotals();
         renderPreview();
@@ -743,6 +779,7 @@
         updateTotals();
         renderPreview();
       });
+
       [els.businessName, els.quoteNumber, els.quoteDate, els.clientName].forEach(el => {
         el.addEventListener('input', renderPreview);
         el.addEventListener('change', renderPreview);
