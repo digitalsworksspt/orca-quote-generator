@@ -1,324 +1,763 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ORCA - Quote Generator</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .container {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      max-width: 800px;
-      width: 100%;
-      padding: 40px;
-    }
-    .logo { text-align: center; margin-bottom: 30px; }
-    .logo h1 { margin: 0; color: #667eea; font-size: 32px; }
-    .logo p { margin: 5px 0 0 0; color: #888; font-size: 14px; }
-    h2 { color: #333; margin-top: 0; margin-bottom: 20px; font-size: 20px; }
-    textarea {
-      width: 100%;
-      padding: 15px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      font-size: 14px;
-      font-family: inherit;
-      resize: vertical;
-      min-height: 120px;
-      margin-bottom: 20px;
-    }
-    textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-    button {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      width: 100%;
-    }
-    button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3); }
-    button.secondary {
-      background: #f0f0f0;
-      color: #667eea;
-      margin-bottom: 20px;
-    }
-    button.delete { background: #ff4757; width: auto; padding: 6px 12px; font-size: 12px; }
-    .quote-section { display: none; margin-top: 30px; }
-    .quote-section.active { display: block; }
-    .details { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-    label { display: flex; flex-direction: column; }
-    label span { font-size: 12px; color: #888; margin-bottom: 5px; font-weight: 600; }
-    input, select {
-      padding: 10px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-    input:focus, select:focus { outline: none; border-color: #667eea; }
-    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-    th { background: #f9f9f9; font-weight: 600; color: #667eea; font-size: 12px; }
-    td input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
-    .totals { display: flex; justify-content: flex-end; gap: 20px; margin: 20px 0; }
-    .total-row { display: flex; justify-content: space-between; min-width: 200px; }
-    .total-row strong { color: #667eea; font-size: 16px; }
-    .preview { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 20px; }
-    .preview-title { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 10px; }
-    @media (max-width: 600px) {
-      .details { grid-template-columns: 1fr; }
-      .container { padding: 20px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="logo">
-      <h1>⚓ ORCA</h1>
-      <p>Professional Quote Generator</p>
-    </div>
-
-    <div id="startScreen">
-      <h2>Describe the Job</h2>
-      <textarea id="jobInput" placeholder="Example: Install 8 electrical sockets, replace the fuse box and run 30m of cable."></textarea>
-      <button onclick="generateQuote()">Generate Quote</button>
-    </div>
-
-    <div id="quoteScreen" class="quote-section">
-      <button class="secondary" onclick="resetApp()">← New Quote</button>
-      
-      <h2>Quote Details</h2>
-      <div class="details">
-        <label>
-          <span>Business Name</span>
-          <input type="text" id="businessName" value="Your Business Name" onchange="updatePreview()">
-        </label>
-        <label>
-          <span>Quote Number</span>
-          <input type="text" id="quoteNumber" value="Q-001" onchange="updatePreview()">
-        </label>
-        <label>
-          <span>Quote Date</span>
-          <input type="date" id="quoteDate" onchange="updatePreview()">
-        </label>
-        <label>
-          <span>Client Name</span>
-          <input type="text" id="clientName" value="Client" onchange="updatePreview()">
-        </label>
-        <label>
-          <span>Currency</span>
-          <select id="currency" onchange="updatePreview()">
-            <option value="£">GBP (£)</option>
-            <option value="$">USD ($)</option>
-            <option value="€">EUR (€)</option>
-          </select>
-        </label>
-      </div>
-
-      <h2>Quote Items</h2>
-      <button class="secondary" onclick="addItem()">+ Add Item</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Qty</th>
-            <th>Unit</th>
-            <th>Price</th>
-            <th>Total</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="itemsTable"></tbody>
-      </table>
-
-      <div class="totals">
-        <div>
-          <div>Subtotal: <strong id="subtotal">£0.00</strong></div>
-          <div>Grand Total: <strong id="grandTotal">£0.00</strong></div>
-        </div>
-      </div>
-
-      <h2>Preview</h2>
-      <div class="preview" id="preview"></div>
-
-      <button onclick="window.print()">🖨️ Print / Save as PDF</button>
-    </div>
-  </div>
-
-  <script>
-    let items = [];
-    let itemId = 0;
-
-    function setTodayDate() {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('quoteDate').value = today;
-    }
-
-    function generateQuote() {
-      const job = document.getElementById('jobInput').value.trim();
-      if (!job) {
-        alert('Please describe the job');
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORCA — AI Quote Generator</title>
+    <style>
+      :root {
+        --bg: #f3f6fc;
+        --panel: #ffffff;
+        --panel-alt: #f8fafc;
+        --primary: #1d4ed8;
+        --primary-2: #2563eb;
+        --text: #0f172a;
+        --muted: #475569;
+        --line: #e2e8f0;
+        --success: #166534;
+        --shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
       }
 
-      items = parseJob(job);
-      document.getElementById('startScreen').style.display = 'none';
-      document.getElementById('quoteScreen').classList.add('active');
-      setTodayDate();
-      renderItems();
-      updatePreview();
-    }
+      * { box-sizing: border-box; }
 
-    function parseJob(text) {
-      const result = [];
-      const parts = text.split(/[,;]/);
+      html { scroll-behavior: smooth; }
 
-      parts.forEach(part => {
-        part = part.trim();
-        if (!part) return;
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(180deg, #eef4ff, var(--bg) 35%, #f8fafc 100%);
+        color: var(--text);
+      }
 
-        const match = part.match(/(\d+(?:\.\d+)?)\s+([a-zA-Z\s]+?)(?:\s+of\s+)?(\w+)?$/i);
-        if (match) {
-          const qty = parseFloat(match[1]);
-          let desc = match[2].trim();
-          let unit = match[3]?.trim() || 'unit';
-          let price = 100;
+      button, input, select, textarea {
+        font: inherit;
+      }
 
-          if (/socket/i.test(desc)) { unit = 'socket'; price = 65; }
-          else if (/fuse/i.test(desc)) { unit = 'fuse box'; price = 250; }
-          else if (/cable|wire/i.test(desc)) { unit = 'm'; price = 35; }
-          else if (/switch/i.test(desc)) { unit = 'switch'; price = 55; }
+      button {
+        cursor: pointer;
+      }
 
-          result.push({ id: itemId++, desc, qty, unit, price });
+      .container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 18px 16px 40px;
+      }
+
+      .topbar {
+        padding: 6px 0 22px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        color: white;
+        font-weight: 800;
+        font-size: 20px;
+        box-shadow: 0 14px 28px rgba(29, 78, 216, 0.28);
+      }
+
+      .brand-text {
+        line-height: 1.05;
+      }
+
+      .brand-text strong {
+        display: block;
+        letter-spacing: 0.12em;
+        font-size: 1.05rem;
+      }
+
+      .brand-text small {
+        display: block;
+        color: var(--muted);
+        font-size: 0.72rem;
+      }
+
+      .card {
+        background: rgba(255,255,255,0.96);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 22px;
+      }
+
+      .hero-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 72vh;
+        background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(239,246,255,0.86));
+      }
+
+      .eyebrow {
+        width: fit-content;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(29, 78, 216, 0.08);
+        color: var(--primary);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 14px 0 18px;
+        font-size: clamp(2.2rem, 5vw, 3.4rem);
+        line-height: 1.08;
+      }
+
+      textarea, input, select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: white;
+        padding: 13px 14px;
+        color: var(--text);
+        font-size: 0.97rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      textarea {
+        min-height: 170px;
+        resize: vertical;
+      }
+
+      textarea:focus, input:focus, select:focus {
+        outline: none;
+        border-color: rgba(29, 78, 216, 0.75);
+        box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.12);
+      }
+
+      .primary-btn, .secondary-btn, .ghost-btn, .delete-btn {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-weight: 700;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      }
+
+      .primary-btn {
+        margin-top: 10px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        color: white;
+        box-shadow: 0 16px 32px rgba(29, 78, 216, 0.26);
+      }
+
+      .secondary-btn {
+        background: #eef2ff;
+        color: var(--primary);
+      }
+
+      .ghost-btn {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+      }
+
+      .primary-btn:hover, .secondary-btn:hover, .ghost-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .workspace {
+        display: grid;
+        gap: 20px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: 1.18rem;
+      }
+
+      .details-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .details-grid label {
+        display: grid;
+        gap: 6px;
+      }
+
+      .details-grid span {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 600;
+      }
+
+      .currency-box {
+        max-width: 260px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
+
+      table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+      }
+
+      th {
+        text-align: left;
+        padding: 12px 14px;
+        color: var(--muted);
+        background: #f8fafc;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      td {
+        border-top: 1px solid var(--line);
+        padding: 10px 14px;
+        vertical-align: middle;
+      }
+
+      td input {
+        min-width: 0;
+      }
+
+      .delete-btn {
+        background: rgba(239, 68, 68, 0.08);
+        color: #b91c1c;
+        border: 1px solid rgba(239, 68, 68, 0.12);
+      }
+
+      .totals-box {
+        max-width: 320px;
+        margin-left: auto;
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #f8fafc;
+      }
+
+      .total-row strong {
+        font-size: 1.04rem;
+      }
+
+      .grand-row {
+        background: rgba(34, 197, 94, 0.07);
+        border-color: rgba(34, 197, 94, 0.2);
+      }
+
+      .grand-row strong {
+        color: var(--success);
+      }
+
+      .preview {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #fff, #fafcff);
+        padding: 16px;
+      }
+
+      .preview-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .preview-head h3 {
+        margin: 0 0 4px;
+        font-size: 1.5rem;
+      }
+
+      .preview-meta {
+        display: grid;
+        gap: 4px;
+        text-align: right;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .preview-client {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .preview table {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .preview th, .preview td {
+        padding: 9px 4px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .preview td:last-child,
+      .preview th:last-child {
+        text-align: right;
+      }
+
+      .preview-summary {
+        margin-top: 18px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .preview-summary-box {
+        width: 100%;
+        max-width: 250px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #f8fafc;
+        padding: 12px;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 0;
+        color: var(--muted);
+      }
+
+      .summary-row.total {
+        border-top: 1px solid var(--line);
+        margin-top: 6px;
+        padding-top: 12px;
+        color: var(--text);
+        font-weight: 800;
+      }
+
+      @media (min-width: 768px) {
+        .container { padding: 20px 24px 48px; }
+        .details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+
+      @media print {
+        body { background: white; }
+        .topbar, #start, .card:not(.preview-card), .section-head button, .primary-btn, .secondary-btn, .ghost-btn, .delete-btn { display: none !important; }
+        .container { max-width: none; padding: 0; }
+        .card { box-shadow: none; border: none; }
+        .preview { border: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">O</div>
+          <div class="brand-text">
+            <strong>ORCA</strong>
+            <small>Quote Generator</small>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section id="start" class="card hero-card">
+          <div class="eyebrow">Fast quotes for trades</div>
+          <h1>Describe the job</h1>
+          <textarea id="jobInput" placeholder="Example: Install 8 electrical sockets, replace the fuse box and run 30m of cable."></textarea>
+          <button id="generateBtn" class="primary-btn" type="button">Generate Quote</button>
+        </section>
+
+        <section id="workspace" class="workspace hidden">
+          <div class="card">
+            <div class="section-head">
+              <h2>Quote details</h2>
+              <button id="newQuoteBtn" class="ghost-btn" type="button">New quote</button>
+            </div>
+
+            <div class="details-grid">
+              <label>
+                <span>Business name</span>
+                <input id="businessName" type="text" value="Hawthorne & Co. Building Services" />
+              </label>
+              <label>
+                <span>Quote number</span>
+                <input id="quoteNumber" type="text" value="Q-2026-001" />
+              </label>
+              <label>
+                <span>Quote date</span>
+                <input id="quoteDate" type="date" />
+              </label>
+              <label>
+                <span>Client name</span>
+                <input id="clientName" type="text" value="Mr. and Mrs. Mason" />
+              </label>
+              <label class="currency-box">
+                <span>Currency</span>
+                <select id="currency">
+                  <option value="£">GBP (£)</option>
+                  <option value="$">USD ($)</option>
+                  <option value="€">EUR (€)</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Quote items</h2>
+              <button id="addItemBtn" class="secondary-btn" type="button">Add item</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Unit price</th>
+                    <th>Total</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="itemsTable"></tbody>
+              </table>
+            </div>
+
+            <div class="totals-box">
+              <div class="total-row">
+                <span>Subtotal</span>
+                <strong id="subtotalValue">£0.00</strong>
+              </div>
+              <div class="total-row grand-row">
+                <span>Grand total</span>
+                <strong id="grandTotalValue">£0.00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card preview-card">
+            <div class="section-head">
+              <h2>Professional preview</h2>
+              <button id="printBtn" class="primary-btn" type="button">Print / Save as PDF</button>
+            </div>
+            <div id="preview" class="preview"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const state = {
+        items: [],
+        counter: 1
+      };
+
+      const els = {
+        start: document.getElementById('start'),
+        workspace: document.getElementById('workspace'),
+        jobInput: document.getElementById('jobInput'),
+        generateBtn: document.getElementById('generateBtn'),
+        newQuoteBtn: document.getElementById('newQuoteBtn'),
+        addItemBtn: document.getElementById('addItemBtn'),
+        printBtn: document.getElementById('printBtn'),
+        itemsTable: document.getElementById('itemsTable'),
+        subtotalValue: document.getElementById('subtotalValue'),
+        grandTotalValue: document.getElementById('grandTotalValue'),
+        preview: document.getElementById('preview'),
+        businessName: document.getElementById('businessName'),
+        quoteNumber: document.getElementById('quoteNumber'),
+        quoteDate: document.getElementById('quoteDate'),
+        clientName: document.getElementById('clientName'),
+        currency: document.getElementById('currency')
+      };
+
+      function formatCurrency(value, symbol = '£') {
+        return `${symbol}${(Number(value) || 0).toFixed(2)}`;
+      }
+
+      function detectUnit(text) {
+        const lower = text.toLowerCase();
+        if (/fuse box/.test(lower)) return { unit: 'fuse box', price: 250 };
+        if (/socket/.test(lower)) return { unit: 'socket', price: 65 };
+        if (/switch/.test(lower)) return { unit: 'switch', price: 55 };
+        if (/cable|wire/.test(lower)) return { unit: 'm', price: 35 };
+        if (/light fitting|luminaire/.test(lower)) return { unit: 'light fitting', price: 90 };
+        if (/radiator/.test(lower)) return { unit: 'radiator', price: 120 };
+        if (/window/.test(lower)) return { unit: 'window', price: 200 };
+        if (/door/.test(lower)) return { unit: 'door', price: 160 };
+        if (/panel/.test(lower)) return { unit: 'panel', price: 180 };
+        if (/point/.test(lower)) return { unit: 'point', price: 80 };
+        if (/visit/.test(lower)) return { unit: 'visit', price: 120 };
+        if (/hour/.test(lower)) return { unit: 'hour', price: 45 };
+        if (/m2|sqm|square metre|square meter/.test(lower)) return { unit: 'm2', price: 35 };
+        if (/metre|meter|metres|meters/.test(lower)) return { unit: 'm', price: 35 };
+        return { unit: 'unit', price: 120 };
+      }
+
+      function parseJobDescription(text) {
+        const chunks = text
+          .split(/[.,;]/)
+          .flatMap(part => part.split(/\s+and\s+|\s+plus\s+/i))
+          .map(part => part.trim())
+          .filter(Boolean);
+
+        const parsed = [];
+
+        chunks.forEach(chunk => {
+          const match = chunk.match(/(\d+(?:\.\d+)?)\s*(?:of\s+)?(.+)/i);
+          if (!match) {
+            const fallback = chunk.replace(/^(install|replace|run|fit|repair|service|supply|remove)\s+/i, '').trim();
+            if (!fallback) return;
+            const unitInfo = detectUnit(fallback);
+            parsed.push({
+              id: `item-${state.counter++}`,
+              description: fallback,
+              quantity: 1,
+              unit: unitInfo.unit,
+              unitPrice: unitInfo.price
+            });
+            return;
+          }
+
+          const quantity = Number(match[1]) || 1;
+          let description = match[2].trim();
+          description = description
+            .replace(/^(install|replace|run|fit|repair|service|supply|remove)\s+/i, '')
+            .replace(/\b(?:m|metre|meter|metres|meters)\b/gi, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          if (!description) description = 'General trade work';
+
+          const unitInfo = detectUnit(description);
+          parsed.push({
+            id: `item-${state.counter++}`,
+            description,
+            quantity,
+            unit: unitInfo.unit,
+            unitPrice: unitInfo.price
+          });
+        });
+
+        if (!parsed.length) {
+          parsed.push({
+            id: `item-${state.counter++}`,
+            description: text.trim(),
+            quantity: 1,
+            unit: 'job',
+            unitPrice: 150
+          });
+        }
+
+        return parsed;
+      }
+
+      function renderTable() {
+        els.itemsTable.innerHTML = '';
+
+        state.items.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><input data-field="description" value="${escapeHtml(item.description)}" /></td>
+            <td><input data-field="quantity" type="number" min="0" step="0.01" value="${item.quantity}" /></td>
+            <td><input data-field="unit" value="${escapeHtml(item.unit)}" /></td>
+            <td><input data-field="unitPrice" type="number" min="0" step="0.01" value="${item.unitPrice}" /></td>
+            <td>${formatCurrency(item.quantity * item.unitPrice, els.currency.value)}</td>
+            <td><button class="delete-btn" type="button">Delete</button></td>
+          `;
+
+          const inputs = row.querySelectorAll('input');
+          inputs.forEach(input => {
+            input.addEventListener('input', () => {
+              const field = input.dataset.field;
+              const value = field === 'description' || field === 'unit' ? input.value : Number(input.value) || 0;
+              item[field] = value;
+              renderTable();
+              updateTotals();
+              renderPreview();
+            });
+          });
+
+          row.querySelector('.delete-btn').addEventListener('click', () => {
+            state.items = state.items.filter(rowItem => rowItem.id !== item.id);
+            renderTable();
+            updateTotals();
+            renderPreview();
+          });
+
+          els.itemsTable.appendChild(row);
+        });
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function updateTotals() {
+        const subtotal = state.items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.unitPrice)), 0);
+        els.subtotalValue.textContent = formatCurrency(subtotal, els.currency.value);
+        els.grandTotalValue.textContent = formatCurrency(subtotal, els.currency.value);
+      }
+
+      function renderPreview() {
+        const businessName = els.businessName.value || 'Business Name';
+        const quoteNumber = els.quoteNumber.value || 'N/A';
+        const quoteDate = els.quoteDate.value || new Date().toISOString().slice(0, 10);
+        const clientName = els.clientName.value || 'Client';
+        const symbol = els.currency.value;
+        const subtotal = state.items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.unitPrice)), 0);
+
+        const rowsHtml = state.items.length
+          ? state.items.map(item => `
+              <tr>
+                <td>${escapeHtml(item.description)}</td>
+                <td>${Number(item.quantity)}</td>
+                <td>${escapeHtml(item.unit)}</td>
+                <td>${formatCurrency(item.unitPrice, symbol)}</td>
+                <td>${formatCurrency(item.quantity * item.unitPrice, symbol)}</td>
+              </tr>
+            `).join('')
+          : '<tr><td colspan="5">No items yet.</td></tr>';
+
+        els.preview.innerHTML = `
+          <div class="preview-head">
+            <div>
+              <h3>${escapeHtml(businessName)}</h3>
+              <span>Professional trade services</span>
+            </div>
+            <div class="preview-meta">
+              <span><strong>Quote #</strong> ${escapeHtml(quoteNumber)}</span>
+              <span><strong>Date</strong> ${escapeHtml(quoteDate)}</span>
+              <span><strong>Currency</strong> ${escapeHtml(symbol)}</span>
+            </div>
+          </div>
+
+          <div class="preview-client">
+            <div><strong>Client</strong><br>${escapeHtml(clientName)}</div>
+            <div><strong>Prepared by</strong><br>${escapeHtml(businessName)}</div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Unit price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+
+          <div class="preview-summary">
+            <div class="preview-summary-box">
+              <div class="summary-row"><span>Subtotal</span><span>${formatCurrency(subtotal, symbol)}</span></div>
+              <div class="summary-row total"><span>Grand total</span><span>${formatCurrency(subtotal, symbol)}</span></div>
+            </div>
+          </div>
+        `;
+      }
+
+      function resetApp() {
+        els.start.classList.remove('hidden');
+        els.workspace.classList.add('hidden');
+        els.jobInput.value = '';
+        state.items = [];
+        els.itemsTable.innerHTML = '';
+        els.subtotalValue.textContent = '£0.00';
+        els.grandTotalValue.textContent = '£0.00';
+        els.preview.innerHTML = '';
+      }
+
+      function generateQuote() {
+        const text = els.jobInput.value.trim();
+        if (!text) {
+          alert('Please describe the job before generating a quote.');
+          els.jobInput.focus();
+          return;
+        }
+
+        state.items = parseJobDescription(text);
+        els.start.classList.add('hidden');
+        els.workspace.classList.remove('hidden');
+        if (!els.quoteDate.value) {
+          const today = new Date().toISOString().slice(0, 10);
+          els.quoteDate.value = today;
+        }
+
+        renderTable();
+        updateTotals();
+        renderPreview();
+      }
+
+      function addEmptyItem() {
+        state.items.push({ id: `item-${state.counter++}`, description: 'New item', quantity: 1, unit: 'unit', unitPrice: 0 });
+        renderTable();
+        updateTotals();
+        renderPreview();
+      }
+
+      els.generateBtn.addEventListener('click', generateQuote);
+      els.newQuoteBtn.addEventListener('click', resetApp);
+      els.addItemBtn.addEventListener('click', addEmptyItem);
+      els.printBtn.addEventListener('click', () => window.print());
+      els.currency.addEventListener('change', () => {
+        updateTotals();
+        renderPreview();
+      });
+      [els.businessName, els.quoteNumber, els.quoteDate, els.clientName].forEach(el => {
+        el.addEventListener('input', renderPreview);
+        el.addEventListener('change', renderPreview);
+      });
+
+      els.jobInput.addEventListener('keydown', event => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+          generateQuote();
         }
       });
 
-      if (result.length === 0) {
-        result.push({ id: itemId++, desc: text, qty: 1, unit: 'job', price: 150 });
-      }
-
-      return result;
-    }
-
-    function renderItems() {
-      const tbody = document.getElementById('itemsTable');
-      tbody.innerHTML = '';
-
-      items.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><input type="text" value="${item.desc}" onchange="updateItem(${item.id}, 'desc', this.value)"></td>
-          <td><input type="number" value="${item.qty}" step="0.01" onchange="updateItem(${item.id}, 'qty', this.value)"></td>
-          <td><input type="text" value="${item.unit}" onchange="updateItem(${item.id}, 'unit', this.value)"></td>
-          <td><input type="number" value="${item.price}" step="0.01" onchange="updateItem(${item.id}, 'price', this.value)"></td>
-          <td>${formatCurrency(item.qty * item.price)}</td>
-          <td><button class="delete" onclick="deleteItem(${item.id})">Delete</button></td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-
-    function updateItem(id, field, value) {
-      const item = items.find(i => i.id === id);
-      if (item) {
-        item[field] = field === 'desc' || field === 'unit' ? value : parseFloat(value);
-        renderItems();
-        updatePreview();
-      }
-    }
-
-    function deleteItem(id) {
-      items = items.filter(i => i.id !== id);
-      renderItems();
-      updatePreview();
-    }
-
-    function addItem() {
-      items.push({ id: itemId++, desc: 'New item', qty: 1, unit: 'unit', price: 0 });
-      renderItems();
-      updatePreview();
-    }
-
-    function formatCurrency(amount) {
-      const curr = document.getElementById('currency').value;
-      return `${curr}${(parseFloat(amount) || 0).toFixed(2)}`;
-    }
-
-    function updateTotals() {
-      const subtotal = items.reduce((sum, i) => sum + (i.qty * i.price), 0);
-      document.getElementById('subtotal').textContent = formatCurrency(subtotal);
-      document.getElementById('grandTotal').textContent = formatCurrency(subtotal);
-      return subtotal;
-    }
-
-    function updatePreview() {
-      updateTotals();
-      const subtotal = items.reduce((sum, i) => sum + (i.qty * i.price), 0);
-      const date = document.getElementById('quoteDate').value;
-      const business = document.getElementById('businessName').value;
-      const client = document.getElementById('clientName').value;
-      const quoteNum = document.getElementById('quoteNumber').value;
-
-      let html = `
-        <div class="preview-title">${business}</div>
-        <p><strong>Quote #</strong> ${quoteNum} | <strong>Date:</strong> ${date}</p>
-        <p><strong>Client:</strong> ${client}</p>
-        <table style="width: 100%; border-collapse: collapse;">
-          <tr style="border-bottom: 1px solid #ddd;">
-            <td style="padding: 8px;"><strong>Description</strong></td>
-            <td style="padding: 8px; text-align: right;"><strong>Qty</strong></td>
-            <td style="padding: 8px; text-align: right;"><strong>Unit</strong></td>
-            <td style="padding: 8px; text-align: right;"><strong>Price</strong></td>
-            <td style="padding: 8px; text-align: right;"><strong>Total</strong></td>
-          </tr>
-      `;
-
-      items.forEach(item => {
-        html += `
-          <tr style="border-bottom: 1px solid #eee;">
-            <td style="padding: 8px;">${item.desc}</td>
-            <td style="padding: 8px; text-align: right;">${item.qty}</td>
-            <td style="padding: 8px; text-align: right;">${item.unit}</td>
-            <td style="padding: 8px; text-align: right;">${formatCurrency(item.price)}</td>
-            <td style="padding: 8px; text-align: right;">${formatCurrency(item.qty * item.price)}</td>
-          </tr>
-        `;
-      });
-
-      html += `
-        </table>
-        <p style="text-align: right; margin-top: 20px;">
-          <strong>Grand Total: ${formatCurrency(subtotal)}</strong>
-        </p>
-      `;
-
-      document.getElementById('preview').innerHTML = html;
-    }
-
-    function resetApp() {
-      document.getElementById('startScreen').style.display = 'block';
-      document.getElementById('quoteScreen').classList.remove('active');
-      document.getElementById('jobInput').value = '';
-      items = [];
-    }
-
-    setTodayDate();
-  </script>
-</body>
+      const today = new Date().toISOString().slice(0, 10);
+      els.quoteDate.value = today;
+      els.subtotalValue.textContent = '£0.00';
+      els.grandTotalValue.textContent = '£0.00';
+    </script>
+  </body>
 </html>
